@@ -1,0 +1,387 @@
+CREATE DATABASE BD_PIM; 
+
+GO 
+
+USE BD_PIM 
+
+GO; 
+
+-- =====================================================  
+
+-- TABELA CLIENTE  
+
+-- ===================================================== 
+
+
+
+CREATE TABLE CLIENTE 
+
+( 
+
+    ID_Cliente INT PRIMARY KEY, 
+
+    Nome VARCHAR (100) NOT NULL, 
+
+    CPF VARCHAR (14) NOT NULL, 
+
+    Telefone VARCHAR (20) NOT NULL, 
+
+    Email VARCHAR (100) NOT NULL 
+
+); 
+
+ -- =====================================================  
+
+-- TABELA TRANSPORTADORA 
+
+ -- ===================================================== 
+
+CREATE TABLE TRANSPORTADORA 
+
+( 
+
+    ID_Transportadora INT PRIMARY KEY, 
+
+    Nome VARCHAR (100) NOT NULL, 
+
+    CNPJ VARCHAR (18) NOT NULL, 
+
+    Telefone VARCHAR (20) NOT NULL 
+
+); 
+
+ -- =====================================================  
+
+-- TABELA MOTORISTA 
+
+ -- ===================================================== 
+
+CREATE TABLE MOTORISTA 
+
+( 
+
+    ID_Motorista INT PRIMARY KEY NOT NULL, 
+
+    ID_Transportadora INT NOT NULL, 
+
+    Nome VARCHAR (100) NOT NULL, 
+
+    CPF VARCHAR (14) NOT NULL, 
+
+    CNH VARCHAR (20) NOT NULL, 
+
+    FOREIGN KEY (ID_Transportadora) REFERENCES TRANSPORTADORA (ID_Transportadora) 
+
+); 
+
+ -- ===================================================== 
+
+ -- TABELA VEICULO  
+
+-- ===================================================== 
+
+CREATE TABLE VEICULO 
+
+( 
+
+    ID_Veiculo INT PRIMARY KEY NOT NULL, 
+
+    ID_Transportadora INT NOT NULL, 
+
+    Placa VARCHAR (10) NOT NULL, 
+
+    Modelo VARCHAR (50) NOT NULL, 
+
+    Capacidade DECIMAL (10,2) NOT NULL, 
+
+    FOREIGN KEY (ID_Transportadora) REFERENCES TRANSPORTADORA (ID_Transportadora) 
+
+); 
+
+ -- ===================================================== 
+
+ -- TABELA ENCOMENDA  
+
+-- ===================================================== 
+
+CREATE TABLE ENCOMENDA 
+
+( 
+
+    ID_Encomenda INT PRIMARY KEY NOT NULL, 
+
+    ID_Cliente INT NOT NULL, 
+
+    Destinatario VARCHAR (100) NOT NULL, 
+
+    Endereco VARCHAR (255) NOT NULL, 
+
+    Peso DECIMAL (10,2) NOT NULL, 
+
+    Valor_Frete DECIMAL (10,2) NOT NULL, 
+
+    Status VARCHAR (50) NOT NULL, 
+
+    FOREIGN KEY (ID_Cliente) REFERENCES CLIENTE (ID_Cliente) 
+
+); 
+
+ -- ===================================================== 
+
+ -- TABELA RASTREAMENTO  
+
+-- ===================================================== 
+
+CREATE TABLE RASTREAMENTO 
+
+( 
+
+    ID_Rastreamento INT PRIMARY KEY NOT NULL, 
+
+    ID_Encomenda INT NOT NULL, 
+
+    Data_Hora DATETIME NOT NULL, 
+
+    Localizacao VARCHAR (255) NOT NULL, 
+
+    Status VARCHAR (50) NOT NULL, 
+
+    Observacao VARCHAR (255) NOT NULL, 
+
+    FOREIGN KEY (ID_Encomenda) REFERENCES ENCOMENDA (ID_Encomenda) 
+
+); 
+
+ -- =====================================================  
+
+-- TABELA ENTREGA  
+
+-- ===================================================== 
+
+CREATE TABLE ENTREGA 
+
+( 
+
+    ID_Entrega INT PRIMARY KEY NOT NULL, 
+
+    ID_Encomenda INT NOT NULL, 
+
+   ID_Motorista INT NOT NULL, 
+
+   ID_Veiculo INT NOT NULL, 
+
+    Data_Saida DATETIME NOT NULL, 
+
+    Data_Prevista DATETIME NOT NULL, 
+
+    Data_Entrega DATETIME , 
+
+    Status_Entrega VARCHAR (50) NOT NULL, 
+
+    Observacao VARCHAR (255) NOT NULL, 
+
+    FOREIGN KEY (ID_Encomenda) REFERENCES ENCOMENDA (ID_Encomenda), 
+
+    FOREIGN KEY (ID_Motorista) REFERENCES MOTORISTA (ID_Motorista), 
+
+    FOREIGN KEY (ID_Veiculo) REFERENCES VEICULO (ID_Veiculo) 
+
+); 
+
+-- =====================================================  
+
+-- INSERT CLIENTE (Adicionando valores) 
+
+ -- ===================================================== 
+
+INSERT INTO CLIENTE  
+
+(ID_Cliente, Nome, CPF, Telefone, Email)  
+
+VALUES  
+
+(1, 'Joao Silva', '12345678900', '11999999999', 'joao@email.com'); 
+
+-- =====================================================  
+
+-- INSERT TRANSPORTADORA (Adicionando valores) 
+
+ -- ===================================================== 
+
+INSERT INTO TRANSPORTADORA 
+
+(ID_Transportadora, Nome, CNPJ, Telefone) 
+
+ VALUES 
+
+ (1, 'Transportadora Express', '12345678000199', '1133334444'); 
+
+-- =====================================================  
+
+-- INSERT MOTORISTA (Adicionando valores) 
+
+-- ===================================================== 
+
+INSERT INTO MOTORISTA  
+
+(ID_Motorista, ID_Transportadora, Nome, CPF, CNH)  
+
+VALUES  
+
+(1, 1, 'Carlos Souza', '98765432100', '12345678901'); 
+
+-- ===================================================== 
+
+ -- INSERT VEICULO (Adicionando valores) 
+
+-- ===================================================== 
+
+INSERT INTO VEICULO  
+
+(ID_Veiculo, ID_Transportadora, Placa, Modelo, Capacidade)  
+
+VALUES  
+
+(1, 1, 'ABC1D23', 'Mercedes Sprinter', 1500.00); 
+
+-- =====================================================  
+
+-- INSERT ENCOMENDA (Adicionando valores) 
+
+ -- ===================================================== 
+
+
+
+INSERT INTO ENCOMENDA  
+
+( ID_Encomenda, ID_Cliente, Destinatario, Endereco, Peso, Valor_Frete, Status) VALUES  
+
+(1, 1, 'Jose da Silva', 'Rua das Flores, 100 - São Paulo', 5.50, 35.90, 'Aguardando coleta'); 
+
+-- =====================================================  
+
+-- INSERT RASTREAMENTO (Adicionando valores) 
+
+-- ===================================================== 
+
+
+
+INSERT INTO RASTREAMENTO 
+
+( 
+
+    ID_Rastreamento,    ID_Encomenda,    Data_Hora,    Localizacao,   Status,    Observacao 
+
+) 
+
+VALUES 
+
+(2, 1, '2026-10-08 12:00:00', 'Barueri - SP', 
+
+'Em trânsito', 'Encomenda encaminhada para o centro de distribuição'), 
+
+
+
+(3, 1, '2026-10-09 09:00:00', 'Campinas - SP', 
+
+'Em trânsito', 'Encomenda em transferência'); 
+
+-- ===================================================== 
+
+ -- INSERT ENTREGA (Adicionando valores) 
+
+ -- ===================================================== 
+
+INSERT INTO ENTREGA 
+
+( 
+
+    ID_Entrega,    ID_Encomenda,    ID_Motorista,    ID_Veiculo,    Data_Saida,    Data_Prevista,    Data_Entrega,    Status_Entrega,    Observacao 
+
+) 
+
+VALUES 
+
+( 
+
+    1,   1,   1,   1,  '2026-10-10 08:00:00',  '2026-10-10 17:00:00',   NULL,    'Em rota',   'Encomenda saiu para entrega' 
+
+); 
+
+-- =====================================================  
+
+-- SELECT  
+
+-- Consultar todos os clientes  
+
+-- ===================================================== 
+
+SELECT *FROM CLIENTE;  
+
+-- =====================================================  
+
+-- SELECT 
+
+ -- Consultar uma encomenda específica 
+
+ -- ===================================================== 
+
+SELECT *FROM ENCOMENDA   
+
+WHERE ID_Encomenda = 1; 
+
+-- ===================================================== 
+
+ -- SELECT COM JOIN  
+
+-- Histórico de rastreamento 
+
+ -- ===================================================== 
+
+SELECT  
+
+    E.ID_Encomenda,    E.Destinatario,    R.Data_Hora,    R.Localizacao,    R.Status,    R.Observacao 
+
+FROM ENCOMENDA E 
+
+INNER JOIN RASTREAMENTO R 
+
+    ON E.ID_Encomenda = R.ID_Encomenda 
+
+WHERE E.ID_Encomenda = 1 
+
+ORDER BY R.Data_Hora; 
+
+-- =====================================================  
+
+-- UPDATE  
+
+-- Atualizar status da encomenda  
+
+-- ===================================================== 
+
+UPDATE ENCOMENDA  
+
+SET Status = 'Em trânsito' 
+
+WHERE ID_Encomenda = 1; 
+
+
+
+
+
+-- =====================================================  
+
+-- CONSULTAR A ENTREGA  
+
+-- =====================================================  
+
+SELECT * FROM ENTREGA; 
+
+
+
+ -- =====================================================  
+
+-- CONSULTAR RASTREAMENTO -- =====================================================  
+
+SELECT * FROM RASTREAMENTO; 
